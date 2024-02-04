@@ -2,7 +2,6 @@ import os
 import time
 from flask import Flask, request, jsonify
 import openai
-from openai import OpenAI
 import functions
 import json
 
@@ -23,10 +22,9 @@ else:
 
 app = Flask(__name__)
 
-client = OpenAI(api_key=OPENAI_API_KEY)
+client = openai.api_key=OPENAI_API_KEY
 
-assistant_id = functions.create_assistant(
-    client)
+assistant_id = functions.create_assistant(client)
 
 @app.route('/start', methods=['GET'])
 def start_conversation():
@@ -63,15 +61,15 @@ def chat():
     elif run_status.status == 'requires_action':
       # Handle the function call
       for tool_call in run_status.required_action.submit_tool_outputs.tool_calls:
-        if tool_call.function.name == "solar_panel_calculations":
-          # Process solar panel calculations
-          arguments = json.loads(tool_call.function.arguments)
-          output = functions.solar_panel_calculations(arguments["address"], arguments["monthly_bill"])
-          client.beta.threads.runs.submit_tool_outputs(thread_id=thread_id,run_id=run.id, tool_outputs=[{"tool_call_id":tool_call.id, "output":json.dumps(output)}])
-        elif tool_call.function.name == "create_lead":
+        # if tool_call.function.name == "roofing_cost_estimation":
+        #   # Process solar panel calculations
+        #   arguments = json.loads(tool_call.function.arguments)
+        # #   output = functions.solar_panel_calculations(arguments["address"], arguments["monthly_bill"])
+        #   client.beta.threads.runs.submit_tool_outputs(thread_id=thread_id,run_id=run.id, tool_outputs=[{"tool_call_id":tool_call.id, "output":json.dumps(output)}])
+        if tool_call.function.name == "create_lead":
           # Process lead creation
           arguments = json.loads(tool_call.function.arguments)
-          output = functions.create_lead(arguments["name"], arguments["phone"],arguments["address"])
+          output = functions.create_lead(arguments["name"], arguments["email"],arguments["phone"],arguments["address"])
           client.beta.threads.runs.submit_tool_outputs(thread_id=thread_id,run_id=run.id,tool_outputs=[{"tool_call_id":tool_call.id,"output":json.dumps(output)}])
       time.sleep(1)  # Wait for a second before checking again
 
