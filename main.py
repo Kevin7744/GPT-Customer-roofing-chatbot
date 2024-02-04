@@ -1,9 +1,10 @@
 import os
 import time
 from flask import Flask, request, jsonify
-import openai
+from openai import OpenAI
 import functions
 import json
+import openai
 
 # Check OpenAI version compatibility
 from packaging import version
@@ -22,7 +23,7 @@ else:
 
 app = Flask(__name__)
 
-client = openai.api_key=OPENAI_API_KEY
+client = OpenAI(api_key=OPENAI_API_KEY)
 
 assistant_id = functions.create_assistant(client)
 

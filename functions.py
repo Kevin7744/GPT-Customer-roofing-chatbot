@@ -1,14 +1,19 @@
 import json
 import requests
 import os
-import openai
+# import openai
+from openai import OpenAI
 from prompts import assistant_instructions
+from dotenv import load_dotenv
+
+load_dotenv()
 
 OPENAI_API_KEY = os.environ['OPENAI_API_KEY']
 AIRTABLE_API_KEY = os.environ['AIRTABLE_API_KEY']
 
-openai.api_key=OPENAI_API_KEY
-client = openai
+client = OpenAI(api_key=OPENAI_API_KEY)
+# openai.api_key=OPENAI_API_KEY
+# client = openai
 
 # Add lead to airtable
 def create_lead(name, email, phone, address):
@@ -49,35 +54,14 @@ def create_assistant(client):
       assistant_id = assistant_data['assistant_id']
       print("Loaded existing assistant ID.")
   else:
-    file = client.File.create(file=open("knowledge.docx", "rb"),purpose='assistants')
+    file = client.files.create(file=open("knowledge.docx", "rb"), purpose='assistants')
     assistant = client.beta.assistants.create(
         instructions=assistant_instructions,
         model="gpt-4-1106-preview",
         tools=[
-            # {
-            #     "type": "retrieval"  # This adds the knowledge base as a tool
-            # },
-            # {
-            #     "type": "function",  # This adds the solar calculator as a tool
-            #     "function": {
-            #         "name": "roofing_cost_estimation",
-            #         "description": "",
-            #         "parameters": {
-            #             "type": "object",
-            #             "properties": {
-            #                 # "address": {
-            #                 #     "type":"string",
-            #                 #     "description": "Address for calculating solar potential."
-            #                 # },
-            #                 # "monthly_bill": {
-            #                 #     "type":"integer",
-            #                 #     "description": "Monthly electricity bill in USD for savings estimation."
-            #                 # }
-            #             },
-            #             # "required": ["address", "monthly_bill"]
-            #         }
-            #     }
-            # },
+            {
+                "type": "retrieval"  # This adds the knowledge base as a tool
+            },
             {
                 "type": "function",  # This adds the lead capture as a tool
                 "function": {
