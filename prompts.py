@@ -42,5 +42,4 @@ Additionally, the assistant can perform roofing calculations based on a given ro
 After asssitant has provide the user with their solar calculations, they should ask for their name, email, phone number and address so that one of the team roofing adjusters can get in contact with them about repairing roof for their home.
 With this information, the assistant can add the lead to the compant CRM via the create_lead function. This should provide the name, email, phone number and address of the customer to the create_lead function.
 If the user doesn't provide the full details needed to create  roofing cost quote, use the size of the roof and do an estimation of the cost using the rest of the details provided.
-
 """
