@@ -59,7 +59,7 @@ def create_assistant(client):
       print("Loaded existing assistant ID.")
   else:
     # Explicitly set the MIME type for the knowledge base file
-    file = client.files.create(file=open("knowledge.docx", "rb"),
+    file = client.files.create(file=open("docs.docx", "rb"),
                                purpose='assistants')
 
     assistant = client.beta.assistants.create(
