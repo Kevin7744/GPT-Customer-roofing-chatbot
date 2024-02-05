@@ -9,7 +9,6 @@ import openai
 # Check OpenAI version compatibility
 from packaging import version
 
-
 required_version = version.parse("1.1.1")
 current_version = version.parse(openai.__version__)
 OPENAI_API_KEY = os.environ['OPENAI_API_KEY']
@@ -20,12 +19,12 @@ if current_version < required_version:
 else:
   print("OpenAI version is compatible.")
 
-
 app = Flask(__name__)
 
 client = OpenAI(api_key=OPENAI_API_KEY)
 
 assistant_id = functions.create_assistant(client)
+
 
 @app.route('/start', methods=['GET'])
 def start_conversation():
@@ -48,14 +47,18 @@ def chat():
   print(f"Received message: {user_input} for thread ID: {thread_id}")
 
   # Add the user's message to the thread
-  client.beta.threads.messages.create(thread_id=thread_id, role="user", content=user_input)
+  client.beta.threads.messages.create(thread_id=thread_id,
+                                      role="user",
+                                      content=user_input)
 
   # Run the Assistant
-  run = client.beta.threads.runs.create(thread_id=thread_id, assistant_id=assistant_id)
+  run = client.beta.threads.runs.create(thread_id=thread_id,
+                                        assistant_id=assistant_id)
 
   # Check if the Run requires action (function call)
   while True:
-    run_status = client.beta.threads.runs.retrieve(thread_id=thread_id, run_id=run.id)
+    run_status = client.beta.threads.runs.retrieve(thread_id=thread_id,
+                                                   run_id=run.id)
     # print(f"Run status: {run_status.status}")
     if run_status.status == 'completed':
       break
@@ -70,8 +73,17 @@ def chat():
         if tool_call.function.name == "create_lead":
           # Process lead creation
           arguments = json.loads(tool_call.function.arguments)
-          output = functions.create_lead(arguments["name"], arguments["email"],arguments["phone"],arguments["address"])
-          client.beta.threads.runs.submit_tool_outputs(thread_id=thread_id,run_id=run.id,tool_outputs=[{"tool_call_id":tool_call.id,"output":json.dumps(output)}])
+          output = functions.create_lead(arguments["name"], arguments["email"],
+                                         arguments["phone"],
+                                         arguments["address"])
+          client.beta.threads.runs.submit_tool_outputs(thread_id=thread_id,
+                                                       run_id=run.id,
+                                                       tool_outputs=[{
+                                                           "tool_call_id":
+                                                           tool_call.id,
+                                                           "output":
+                                                           json.dumps(output)
+                                                       }])
       time.sleep(1)  # Wait for a second before checking again
 
   # Retrieve and return the latest message from the assistant

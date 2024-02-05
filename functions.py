@@ -12,8 +12,10 @@ OPENAI_API_KEY = os.environ['OPENAI_API_KEY']
 AIRTABLE_API_KEY = os.environ['AIRTABLE_API_KEY']
 
 client = OpenAI(api_key=OPENAI_API_KEY)
+
 # openai.api_key=OPENAI_API_KEY
 # client = openai
+
 
 # Add lead to airtable
 def create_lead(name, email, phone, address):
@@ -39,6 +41,7 @@ def create_lead(name, email, phone, address):
   else:
     print(f"Failed to create lead: {response.text}")
 
+
 # Main calculation function for solar data output
 # def roofing_cost_estimation():
 #   print(f"Calculating roofing potential ")
@@ -54,7 +57,8 @@ def create_assistant(client):
       assistant_id = assistant_data['assistant_id']
       print("Loaded existing assistant ID.")
   else:
-    file = client.files.create(file=open("knowledge.docx", "rb"), purpose='assistants')
+    file = client.files.create(file=open("knowledge.docx", "rb"),
+                               purpose='assistants')
     assistant = client.beta.assistants.create(
         instructions=assistant_instructions,
         model="gpt-4-1106-preview",
@@ -66,7 +70,8 @@ def create_assistant(client):
                 "type": "function",  # This adds the lead capture as a tool
                 "function": {
                     "name": "create_lead",
-                    "description": "Capture lead details and save to Airtable.",
+                    "description":
+                    "Capture lead details and save to Airtable.",
                     "parameters": {
                         "type": "object",
                         "properties": {

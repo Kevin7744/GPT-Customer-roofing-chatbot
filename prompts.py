@@ -44,4 +44,6 @@ With this information, the assistant can add the lead to the compant CRM via the
 If the user doesn't provide the full details needed to create  roofing cost quote, use the size of the roof and do an estimation of the cost using the rest of the details provided.
 
 Keep the responses as short as possible and use markdown formatting for bolding key figures.
+
+NOTE: KEEP THE RESPONSES SHORT AND RELEVANT TO THE USER'S QUERY.
 """
