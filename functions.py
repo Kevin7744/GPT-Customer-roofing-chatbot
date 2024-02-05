@@ -50,6 +50,7 @@ def create_lead(name, email, phone, address):
 # Create or load assistant
 def create_assistant(client):
   assistant_file_path = 'assistant.json'
+
   # If there is an assistant.json file already, then load that assistant
   if os.path.exists(assistant_file_path):
     with open(assistant_file_path, 'r') as file:
@@ -57,8 +58,10 @@ def create_assistant(client):
       assistant_id = assistant_data['assistant_id']
       print("Loaded existing assistant ID.")
   else:
+    # Explicitly set the MIME type for the knowledge base file
     file = client.files.create(file=open("knowledge.docx", "rb"),
                                purpose='assistants')
+
     assistant = client.beta.assistants.create(
         instructions=assistant_instructions,
         model="gpt-4-1106-preview",
@@ -98,9 +101,12 @@ def create_assistant(client):
             }
         ],
         file_ids=[file.id])
+
     # Create a new assistant.json file to load on future runs
     with open(assistant_file_path, 'w') as file:
       json.dump({'assistant_id': assistant.id}, file)
       print("Created a new assistant and saved the ID.")
+
     assistant_id = assistant.id
+
   return assistant_id

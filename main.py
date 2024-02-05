@@ -5,6 +5,7 @@ from openai import OpenAI
 import functions
 import json
 import openai
+import functions
 
 # Check OpenAI version compatibility
 from packaging import version
